@@ -1,7 +1,5 @@
 module.exports = (err, req, res, next) => {
-    console.error(err.stack);
-    res.status(500).json({
-        message: 'Внутренняя ошибка сервера',
-        status: 500
-    });
-}
+  res.render("errors/5XX", {
+    title: "Внутренняя ошибка сервера",
+  });
+};
