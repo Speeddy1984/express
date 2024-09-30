@@ -1,14 +1,19 @@
 <%- include('../port/layout-start', { title: book.title }) %>
 
 <div class="card my-4">
-    <div class="card-body">
-        <h2 class="card-title"><%= book.title %></h2>
-        <p class="card-text"><strong>Описание:</strong> <%= book.description %></p>
-        <p class="card-text"><strong>Автор:</strong> <%= book.authors %></p>
-        <p class="card-text"><strong>Избранное:</strong> <%= book.favorite ? 'Да' : 'Нет' %></p>
-        <a href="/books" class="btn btn-secondary">Назад к списку</a>
-        <a href="/books/<%= book.id %>/edit" class="btn btn-primary">Редактировать</a>
-    </div>
+  <div class="card-body">
+    <h2 class="card-title"><%= book.title %></h2>
+    <p class="card-text"><strong>Описание:</strong> <%= book.description %></p>
+    <p class="card-text"><strong>Автор:</strong> <%= book.authors %></p>
+    <p class="card-text">
+      <strong>Избранное:</strong> <%= book.favorite ? 'Да' : 'Нет' %>
+    </p>
+    <p class="card-text"><strong>Просмотры:</strong> <%= counter %></p>
+    <a href="/books" class="btn btn-secondary">Назад к списку</a>
+    <a href="/books/<%= book.id %>/edit" class="btn btn-primary"
+      >Редактировать</a
+    >
+  </div>
 </div>
 
 <%- include('../port/layout-end') %>

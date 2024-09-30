@@ -1,6 +1,7 @@
 const express = require("express");
 const router = express.Router();
 const { v4: uuidv4 } = require("uuid");
+const axios = require("axios"); // Для отправки запросов к микросервису счётчика
 
 class Book {
   constructor(
@@ -53,11 +54,31 @@ router.post("/create", (req, res) => {
 });
 
 // Страница для просмотра книги по ID
-router.get("/:id", (req, res) => {
+router.get("/:id", async (req, res) => {
   const { id } = req.params;
   const book = books.find((b) => b.id === id);
+
   if (book) {
-    res.render("books/view", { book });
+    try {
+      // Увеличиваем счётчик просмотров через микросервис
+      await axios.post(`http://counter-service:4000/counter/${book.id}/incr`);
+
+      // Получаем текущее значение счётчика просмотров книги
+      const counterResponse = await axios.get(
+        `http://counter-service:4000/counter/${book.id}`
+      );
+      console.log(counterResponse.data);
+      const counter = counterResponse.data.count;
+
+      // Отображаем книгу и значение счётчика просмотров
+      res.render("books/view", { book, counter });
+    } catch (error) {
+      console.error("Ошибка при работе со счётчиком:", error);
+      res.render("books/view", {
+        book,
+        counter: "Ошибка получения счётчика просмотров",
+      });
+    }
   } else {
     res.render("errors/404", {
       title: "404 / Книга не найдена",
