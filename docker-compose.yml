@@ -6,18 +6,45 @@ services:
       - "3000:3000"
     depends_on:
       - counter-service
+      - mongo  # Добавляем зависимость от MongoDB
+    environment:
+      MONGO_URI: mongodb://mongo:27017/library  # Подключение к MongoDB
 
   counter-service:
     image: speeddy1984/counter-service
     ports:
       - "4000:4000"
-    environment:
-      REDIS_HOST: redis
-      REDIS_PORT: 6379
-    depends_on:
-      - redis
 
-  redis:
-    image: redis:latest
+  mongo:
+    image: mongo:latest
     ports:
-      - "6379:6379"
+      - "27017:27017"
+    volumes:
+      - mongo-data:/data/db
+
+volumes:
+  mongo-data:
+
+# version: '3'
+# services:
+#   app:
+#     image: speeddy1984/library-app
+#     ports:
+#       - "3000:3000"
+#     depends_on:
+#       - counter-service
+
+#   counter-service:
+#     image: speeddy1984/counter-service
+#     ports:
+#       - "4000:4000"
+#     environment:
+#       REDIS_HOST: redis
+#       REDIS_PORT: 6379
+#     depends_on:
+#       - redis
+
+#   redis:
+#     image: redis:latest
+#     ports:
+#       - "6379:6379"
