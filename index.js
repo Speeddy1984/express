@@ -1,7 +1,12 @@
 const express = require('express');
 const err404 = require('./middleware/err404')
 const err5XX = require('./middleware/err5XX')
+const http = require("http");
+const socketIo = require("socket.io");
+
 const app = express();
+const server = http.createServer(app);
+const io = socketIo(server);
 
 const mongoose = require('mongoose');
 const session = require("express-session");
@@ -44,15 +49,20 @@ const apiBooksRouter = require('./api/apiBooks');  // Роуты для API
 const userRoutes = require("./routes/user");
 app.use("/api/user", userRoutes);
 
-// Авторизация пользователя, пока оставляем. Возможно, пригодится позже
-app.post('/api/user/login', (req, res) => {
-    res.status(201).json({
-        id: 1,
-        mail: 'test@mail.ru'
-    });
+io.on("connection", (socket) => {
+  console.log("Новый клиент подключился");
+
+  socket.on("new_comment", (data) => {
+    console.log("Комментарий получен:", data);
+    io.emit("broadcast_comment", data);
+  });
+
+  socket.on("disconnect", () => {
+    console.log("Клиент отключился");
+  });
 });
 
-// Роуты для API, оставить для будущих задач
+// Роуты для API
 app.use('/api/books', apiBooksRouter);
 
 // new! Роуты для многостраничного интерфейса
@@ -62,6 +72,6 @@ app.use('/books', booksRouter);
 app.use(err404);
 app.use(err5XX);
 
-app.listen(3000, () => {
-  console.log(`Сервер запущен на порте 3000`);
+server.listen(3000, () => {
+  console.log(`Сервер запущен на порту 3000`);
 });

@@ -1,7 +1,7 @@
 <%- include('../port/layout-start', { title: title }) %>
 
 <h1 class="my-4"><%= title %></h1>
-<form action="/books/<%= book.id %>/edit" method="POST">
+<form action="/books/<%= book._id %>/edit" method="POST">
     <div class="mb-3">
         <label for="title" class="form-label">Название</label>
         <input type="text" class="form-control" id="title" name="title" value="<%= book.title %>" required>
